@@ -1,0 +1,184 @@
+local wezterm = require 'wezterm'
+
+local launch_menu = {}
+local default_prog = {}
+local set_environment_variables = {}
+
+-- Using shell
+if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+    term = '' -- Set to empty so FZF works on windows
+    table.insert(launch_menu, {
+        label = 'PowerShell-NewWindow',
+        args = {"C:\\Windows\\System32\\WindowsPowerShell\\v7.3\\7\\pwsh.exe"}
+    })
+    default_prog = {"C:\\Windows\\System32\\WindowsPowerShell\\v7.3\\7\\pwsh.exe"}
+    require("key-bind-windows")
+elseif wezterm.target_triple == 'x86_64-apple-darwin' then
+    table.insert(launch_menu, {
+        label = 'Zsh-NewWindow',
+        args = {'/bin/zsh', '-l'}
+    })
+    default_prog = {'/bin/zsh', '-l'}
+    require("key-bind-mac")
+elseif wezterm.target_triple == 'aarch64-apple-darwin' then
+    table.insert(launch_menu, {
+        label = 'Zsh-NewWindow',
+        args = {'/bin/zsh', '-l'}
+    })
+    default_prog = {'/bin/zsh', '-l'}
+    require("key-bind-mac")
+end
+
+-- Title
+
+function basename(s)
+    return string.gsub(s, '(.*[/\\])(.*)', '%2')
+end
+
+wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
+    local pane = tab.active_pane
+
+    local index = ""
+    if #tabs > 1 then
+        index = string.format("%d: ", tab.tab_index + 1)
+    end
+
+    local process = basename(pane.foreground_process_name)
+
+    return {{
+        Text = ' ' .. index .. process .. ' '
+    }}
+end)
+
+-- Initial startup
+-- wezterm.on('gui-startup', function(cmd)
+--     local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+--     window:gui_window():maximize()
+-- end)
+
+local config = {
+    check_for_updates = false,
+    switch_to_last_active_tab_when_closing_tab = false,
+    enable_scroll_bar = true,
+
+    -- Window
+    -- native_macos_fullscreen_mode = true,
+    -- adjust_window_size_when_changing_font_size = true,
+    macos_window_background_blur = 70,
+    window_background_opacity = 0.95, -- 如果设置为1.0会明显卡顿
+    window_padding = {
+        left = 20,
+        right = 1,
+        top = 30,
+        bottom = 20
+    },
+    -- window_close_confirmation = "NeverPrompt",
+    window_decorations = "RESIZE",
+
+    -- Font
+    font = wezterm.font_with_fallback({"JetBrainsMonoNL Nerd Font"}),
+    font_size = 14,
+
+    -- 光标样式设置为竖线
+    cursor_thickness = 0.1,
+
+    -- Tab bar
+    -- enable_tab_bar = true,
+    hide_tab_bar_if_only_one_tab = true,
+    show_tab_index_in_tab_bar = false,
+    -- tab_max_width = 25,
+    -- scrollback_lines = 99999,
+    tab_bar_at_bottom = false,
+    use_fancy_tab_bar = false,
+    show_new_tab_button_in_tab_bar = false,
+
+    -- Keys
+    disable_default_key_bindings = false,
+    -- Allow using ^ with single key press.
+    use_dead_keys = false,
+    keys = keyBind(),
+
+    -- 主题
+    color_scheme = 'Dracula',
+    colors = {
+        -- 选项卡栏颜色定义
+        tab_bar = {
+
+        -- 未激活的选项卡背景颜色
+        inactive_tab = {
+            bg_color = "#1E1F2A",
+            fg_color = "#657B83",
+        },
+
+        -- 悬停在未激活选项卡上时的背景和前景颜色
+        inactive_tab_hover = {
+            bg_color = "#1E1F2A",
+            fg_color = "#839496",
+        },
+
+        -- 激活的选项卡背景色
+        active_tab = {
+            bg_color = "#1E1F2A",
+            fg_color = "#839496",
+        },
+
+        background = "#1E1F2A",
+        },
+
+        -- ... 其他颜色定义 ...
+        selection_bg = '#D0AB52'
+    },
+
+    inactive_pane_hsb = {
+        hue = 1.0,
+        saturation = 1.0,
+        brightness = 1.0
+    },
+
+    mouse_bindings = { -- Paste on right-click
+    {
+        event = {
+            Down = {
+                streak = 1,
+                button = 'Right'
+            }
+        },
+        mods = 'NONE',
+        action = wezterm.action {
+            PasteFrom = 'Clipboard'
+        }
+    }, -- Change the default click behavior so that it only selects
+    -- text and doesn't open hyperlinks
+    {
+        event = {
+            Up = {
+                streak = 1,
+                button = 'Left'
+            }
+        },
+        mods = 'NONE',
+        action = wezterm.action {
+            CompleteSelection = 'PrimarySelection'
+        }
+    }, -- CTRL-Click open hyperlinks
+    {
+        event = {
+            Up = {
+                streak = 1,
+                button = 'Left'
+            }
+        },
+        mods = 'CMD',
+        action = 'OpenLinkAtMouseCursor'
+    }},
+
+    default_prog = default_prog,
+    set_environment_variables = set_environment_variables,
+    launch_menu = launch_menu
+}
+if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+    config.font_size = 18
+elseif wezterm.target_triple == 'x86_64-apple-darwin' then
+    config.font_size = 20
+end
+return config
