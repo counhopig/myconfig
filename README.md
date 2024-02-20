@@ -13,7 +13,7 @@ my config file for many tools
 ### install "zsh-syntax-highlighting"
 ```git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting```
 ## Open the ~/.zshrc, and change "plugins"
-```plugins=(git
-         z
-         zsh-autosuggestions
-         zsh-syntax-highlighting)```
+"plugins=(git
+            z
+            zsh-autosuggestions
+            zsh-syntax-highlighting)"
