@@ -17,3 +17,29 @@ my config file for many tools
             z
             zsh-autosuggestions
             zsh-syntax-highlighting)"
+
+
+# install docker in ubuntu
+## 更新apt包索引
+sudo apt-get update
+
+## 安装允许apt通过HTTPS使用仓库的包
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+## 添加Docker的官方GPG密钥
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+## 设置稳定版仓库
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+## 更新apt包索引
+sudo apt-get update
+
+## 安装Docker Engine和Docker Compose
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
