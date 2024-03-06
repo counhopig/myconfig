@@ -1,29 +1,9 @@
 local wezterm = require("wezterm")
-
--- Using shell
-if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-	term = "" -- Set to empty so FZF works on windows
-	table.insert(launch_menu, {
-		label = "PowerShell-NewWindow",
-		args = { "C:\\Windows\\System32\\WindowsPowerShell\\v7.3\\7\\pwsh.exe" },
-	})
-	default_prog = { "C:\\Windows\\System32\\WindowsPowerShell\\v7.3\\7\\pwsh.exe" }
-	require("key-bind-windows")
-elseif wezterm.target_triple == "x86_64-apple-darwin" then
-	table.insert(launch_menu, {
-		label = "Zsh-NewWindow",
-		args = { "/bin/zsh", "-l" },
-	})
-	default_prog = { "/bin/zsh", "-l" }
-	require("key-bind-mac")
-elseif wezterm.target_triple == "aarch64-apple-darwin" then
-	default_prog = { "/bin/zsh", "-l" }
-	require("key-bind-mac")
-end
+local default_prog;
 
 local config = {
 	font_size = 16,
-	font = wezterm.font("JetBrainsMonoNL Nerd Font", { weight = "Regular" }),
+	font = wezterm.font("FiraCode Nerd Font Mono", { weight = "Regular" }),
 	color_scheme = "Catppuccin Mocha",
 
 	use_fancy_tab_bar = false,
@@ -46,5 +26,17 @@ local config = {
 	cursor_thickness = 2,
 	cursor_blink_rate = 500,
 }
+
+-- Using shell
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+	config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe" }
+	require("key-bind-windows")
+elseif wezterm.target_triple == "x86_64-apple-darwin" then
+	default_prog = { "/bin/zsh", "-l" }
+	require("key-bind-mac")
+elseif wezterm.target_triple == "aarch64-apple-darwin" then
+	default_prog = { "/bin/zsh", "-l" }
+	require("key-bind-mac")
+end
 
 return config
