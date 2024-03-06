@@ -35,7 +35,7 @@ local config = {
 	color_scheme = "Catppuccin Mocha",
 
 	use_fancy_tab_bar = false,
-	-- hide_tab_bar_if_only_one_tab = true,
+	hide_tab_bar_if_only_one_tab = true,
 	window_decorations = "RESIZE",
 	show_new_tab_button_in_tab_bar = false,
 	window_background_opacity = 0.95,
