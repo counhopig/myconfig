@@ -5,7 +5,8 @@
     "spacing": 5,
     "modules-left": ["hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
-    "modules-right": ["keyboard-state", "network", "bluetooth", "pulseaudio", "memory", "cpu"],
+    "modules-right": ["tray", "network", "pulseaudio", "memory", "cpu"],
+    
     "hyprland/workspaces": {
         "format": "{icon} {windows}",
         "sort-by-number": true,
